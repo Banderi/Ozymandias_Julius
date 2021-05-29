@@ -13,30 +13,29 @@
 
 class image_collection {
 private:
-    static const size_t NAME_SIZE = 256;
     static const size_t HEADER_DATA_SIZE = 10;
+    static const size_t BMP_NAME_SIZE = 200;
     static const size_t GROUP_IMAGE_IDS_SIZE = 300;
-    static const size_t SCRATCH_DATA_SIZE = 20000000; ///???
+    static const size_t MAX_FILE_SIZE = 20000000;
+    static const size_t MAX_IMAGE_SIZE = 10000;
     static const size_t HEADER_SG2_SIZE = 20680;
     static const size_t HEADER_SG3_SIZE = 40680;
 
-    bool initialized;
     int32_t id_shift_overall;
-    char name[NAME_SIZE];
+    std::string name;
     size_t entries_num;
     size_t groups_num;
     uint32_t header_data[HEADER_DATA_SIZE];
-    uint16_t group_image_ids[GROUP_IMAGE_IDS_SIZE];
-//    std::vector<image> images;
-    image* images;
-    color_t *data;
-
-    bool check_initialized() const;
+    std::vector<uint16_t> group_image_ids;
+    std::vector<image> images;
 
 public:
     image_collection();
+    ~image_collection() = default;
 
-    int load_555(const char *filename_555, const char *filename_sgx, int shift = 0);
+    int load_sgx(const char *filename_sgx, int shift = 0);
+    int load_555(const char *filename_555);
+    int load_files(const char *filename_555, const char *filename_sgx, int shift = 0);
 
     int32_t get_shift() const;
     void set_shift(int32_t shift);

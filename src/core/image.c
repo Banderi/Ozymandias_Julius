@@ -287,7 +287,7 @@ static const color_t *load_external_data(const image *img) {
     switch (GAME_ENV) {
         case ENGINE_ENV_C3:
             strcpy(&filename[0], "555/");
-            strcpy(&filename[4], img->draw.bitmap_name);
+            strcpy(&filename[4], img->get_name());
             file_change_extension(filename, "555");
             size = io_read_file_part_into_buffer(
                     &filename[4], MAY_BE_LOCALIZED, buf,
@@ -296,7 +296,7 @@ static const color_t *load_external_data(const image *img) {
             break;
         case ENGINE_ENV_PHARAOH:
             strcpy(&filename[0], "Data/");
-            strcpy(&filename[5], img->draw.bitmap_name);
+            strcpy(&filename[5], img->get_name());
             file_change_extension(filename, "555");
             size = io_read_file_part_into_buffer(
                     &filename[5], MAY_BE_LOCALIZED, buf,
@@ -311,11 +311,10 @@ static const color_t *load_external_data(const image *img) {
                 img->draw.data_length, img->draw.offset - 1
         );
         if (!size) {
-            log_error("unable to load external image", img->draw.bitmap_name, 0);
-            return NULL;
+            log_error("unable to load external image", img->get_name(), 0);
+            return nullptr;
         }
     }
-//    color_t *dst = (color_t *) &data.tmp_data[4000000];
 
     // NB: isometric images are never external
     if (img->draw.is_fully_compressed)
@@ -419,18 +418,18 @@ const color_t *image_data(int id) {
     if (img->draw.is_external)
         return load_external_data(img);
     else
-        return img->draw.data; // todo: mods
+        return img->get_data(); // todo: mods
 }
 const color_t *image_data_letter(int letter_id) {
-    return image_letter(letter_id)->draw.data;
+    return image_letter(letter_id)->get_data();
 }
 const color_t *image_data_enemy(int id) {
     const image *lookup = image_get(id);
     const image *img = image_get(id + lookup->offset_mirror);
     id += img->offset_mirror;
     if (img->draw.offset > 0)
-        return img->draw.data;
-    return NULL;
+        return img->get_data();
+    return nullptr;
 }
 
 int image_load_main(int climate_id, int is_editor, int force_reload) {
@@ -445,19 +444,19 @@ int image_load_main(int climate_id, int is_editor, int force_reload) {
         case ENGINE_ENV_C3:
             filename_555 = is_editor ? gfc.C3_EDITOR_555[climate_id] : gfc.C3_MAIN_555[climate_id];
             filename_sgx = is_editor ? gfc.C3_EDITOR_SG2[climate_id] : gfc.C3_MAIN_SG2[climate_id];
-            if (!data.main->load_555(filename_555, filename_sgx))
+            if (!data.main->load_files(filename_555, filename_sgx))
                 return 0;
             data.current_climate = climate_id;
             break;
         case ENGINE_ENV_PHARAOH:
             filename_555 = is_editor ? gfc.PH_EDITOR_GRAPHICS_555 : gfc.PH_MAIN_555;
             filename_sgx = is_editor ? gfc.PH_EDITOR_GRAPHICS_SG3 : gfc.PH_MAIN_SG3;
-            if (!data.ph_expansion->load_555(gfc.PH_EXPANSION_555, gfc.PH_EXPANSION_SG3, -200)) return 0;
-            if (!data.ph_sprmain->load_555(gfc.PH_SPRMAIN_555, gfc.PH_SPRMAIN_SG3, 700)) return 0;
-            if (!data.ph_unloaded->load_555(gfc.PH_UNLOADED_555, gfc.PH_UNLOADED_SG3, 11025)) return 0;
-            if (!data.main->load_555(filename_555, filename_sgx, 11706)) return 0;
+            if (!data.ph_expansion->load_files(gfc.PH_EXPANSION_555, gfc.PH_EXPANSION_SG3, -200)) return 0;
+            if (!data.ph_sprmain->load_files(gfc.PH_SPRMAIN_555, gfc.PH_SPRMAIN_SG3, 700)) return 0;
+            if (!data.ph_unloaded->load_files(gfc.PH_UNLOADED_555, gfc.PH_UNLOADED_SG3, 11025)) return 0;
+            if (!data.main->load_files(filename_555, filename_sgx, 11706)) return 0;
             // ???? 539-long gap?
-            if (!data.ph_terrain->load_555(gfc.PH_TERRAIN_555, gfc.PH_TERRAIN_SG3, 14252)) return 0;
+            if (!data.ph_terrain->load_files(gfc.PH_TERRAIN_555, gfc.PH_TERRAIN_SG3, 14252)) return 0;
             // ???? 64-long gap?
             if (!data.ph_sprambient->load_555(gfc.PH_SPRAMBIENT_555, gfc.PH_SPRAMBIENT_SG3, 15766+64)) return 0;
             if (!data.font->load_555(gfc.PH_FONTS_555, gfc.PH_FONTS_SG3, 18764)) return 0;
@@ -482,8 +481,10 @@ int image_load_enemy(int enemy_id) {
             break;
     }
 
-    if (!data.enemy->load_555(filename_555, filename_sgx))
+    if (!data.enemy->load_files(filename_555, filename_sgx)) {
         return 0;
+    }
+
     return 1;
 }
 int image_load_fonts(encoding_type encoding) {
@@ -607,16 +608,23 @@ int image_load_fonts(encoding_type encoding) {
 //    fclose(fp);
 //}
 
-image::image() {
-
-}
-
 void image::set_data(color_t *image_data, size_t size) {
-    size_t bytes_size = size * sizeof(color_t);
-    draw.data = new color_t[bytes_size];
-    memcpy(draw.data, image_data, bytes_size);
+    draw.data.reserve(size);
+    std::copy(image_data, image_data + size, std::back_inserter(draw.data));
 }
 
-image::~image() {
-    delete[] draw.data;
+const color_t *image::image::get_data() const {
+    return draw.data.data();
+}
+
+const char *image::get_name() const {
+    return draw.bitmap_name.c_str();
+}
+
+void image::set_name(const char *filename) {
+    draw.bitmap_name = std::string(filename);
+}
+
+void image::set_name(const char *filename, size_t size) {
+    draw.bitmap_name = std::string(filename, size);
 }

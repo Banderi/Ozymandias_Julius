@@ -6,6 +6,10 @@
 #include "core/image_group.h"
 #include "graphics/color.h"
 
+#include <vector>
+#include <string>
+#include <algorithm>
+
 #define IMAGE_FONT_MULTIBYTE_OFFSET 10000
 #define IMAGE_FONT_MULTIBYTE_TRAD_CHINESE_MAX_CHARS 2188
 #define IMAGE_FONT_MULTIBYTE_SIMP_CHINESE_MAX_CHARS 2130
@@ -29,30 +33,36 @@ class image {
 public:
     int width = 0;
     int height = 0;
-    int num_animation_sprites;
-    int sprite_offset_x;
-    int sprite_offset_y;
-    int animation_can_reverse;
-    int animation_speed_id;
-    int offset_mirror;
+    int num_animation_sprites = 0;
+    int sprite_offset_x = 0;
+    int sprite_offset_y = 0;
+    int animation_can_reverse = 0;
+    int animation_speed_id = 0;
+    int offset_mirror = 0;
 
     struct {
-        int type;
-        int is_fully_compressed;
-        int is_external;
-        int has_compressed_part;
-        char bitmap_name[200];
+        int type = 0;
+        int is_fully_compressed = 0;
+        int is_external = 0;
+        int has_compressed_part = 0;
+        std::string bitmap_name;
         int bmp_index = 0;
-        color_t *data = nullptr;
+        std::vector<color_t> data;
         int offset = 0;
         int data_length = 0;
         int uncompressed_length = 0;
         size_t size = 0;
     } draw;
 
-    image();
+    image() = default;
+    ~image() = default;
+
     void set_data(color_t *image_data, size_t size);
-    ~image();
+    const color_t *get_data() const;
+
+    const char *get_name() const;
+    void set_name(const char *filename);
+    void set_name(const char *filename, size_t size);
 
 };
 
