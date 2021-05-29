@@ -3,7 +3,7 @@
 #include "building/industry.h"
 #include "building/model.h"
 #include "core/calc.h"
-#include "core/image.h"
+#include "core/game_images.h"
 #include "game/animation.h"
 #include "map/sprite.h"
 #include "core/game_environment.h"

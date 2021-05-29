@@ -1,7 +1,7 @@
 #include "object.h"
 
 #include "core/calc.h"
-#include "core/image.h"
+#include "core/game_images.h"
 #include "empire/city.h"
 #include "empire/trade_route.h"
 #include "empire/type.h"

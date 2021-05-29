@@ -141,6 +141,7 @@ int image_collection::load_555(const char *filename_555) {
     buffer buffer_555(file_size);
     int data_size = io_read_file_into_buffer(filename_555, MAY_BE_LOCALIZED, &buffer_555, MAX_FILE_SIZE);
     if (!data_size) {
+        SDL_Log("Loading image collection from file '%s': can't read file", filename_555);
         return 0;
     }
 
@@ -161,18 +162,18 @@ int image_collection::load_555(const char *filename_555) {
 
         size_t image_size = 0;
         if (img->is_fully_compressed()) {
-            image_size = convert_compressed(&buffer_555, img->get_data_length(), dst);
+            image_size = image::convert_compressed(&buffer_555, img->get_data_length(), dst);
             dst+=image_size;
         } else if (img->has_compressed_part()) { // isometric tile
-            size_t uncompressed_size = convert_uncompressed(&buffer_555, img->get_uncompressed_length(), dst);
+            size_t uncompressed_size = image::convert_uncompressed(&buffer_555, img->get_uncompressed_length(), dst);
             dst+=uncompressed_size;
 
-            size_t compressed_size = convert_compressed(&buffer_555, img->get_data_length() - img->get_uncompressed_length(), dst);
+            size_t compressed_size = image::convert_compressed(&buffer_555, img->get_data_length() - img->get_uncompressed_length(), dst);
             dst+=compressed_size;
 
             image_size = uncompressed_size + compressed_size;
         } else {
-            image_size = convert_uncompressed(&buffer_555, img->get_data_length(), dst);
+            image_size = image::convert_uncompressed(&buffer_555, img->get_data_length(), dst);
             dst+=image_size;
         }
 
@@ -214,7 +215,7 @@ const image *image_collection::get_image(int id, bool relative) {
         id -= get_shift();
     }
     if (id < 0 || id >= entries_num) {
-        return nullptr;
+        return &image::dummy();
     }
     return &images.at(id);
 }

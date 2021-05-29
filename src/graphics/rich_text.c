@@ -1,13 +1,12 @@
-#include "rich_text.h"
-
 #include "core/calc.h"
-#include "core/image.h"
 #include "core/image_group.h"
 #include "core/string.h"
+#include "core/game_images.h"
 #include "graphics/image.h"
 #include "graphics/image_button.h"
 #include "graphics/scrollbar.h"
 #include "graphics/window.h"
+#include "graphics/rich_text.h"
 
 #define MAX_LINKS 50
 

@@ -39,7 +39,7 @@ endif()
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}/cmake/")
 
 #SET(CMAKE_RC_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE}")
-SET(CMAKE_CXX_FLAGS "-std=c++0x -Wno-c++11-narrowing" ${CMAKE_CXX_FLAGS})
+SET(CMAKE_CXX_FLAGS "-std=c++0x -Wno-c++11-narrowing -Wno-deprecated" ${CMAKE_CXX_FLAGS})
 set (CMAKE_CXX_STANDARD 11)
 
 #SET_SOURCE_FILES_PROPERTIES(${SOURCE_FILES} PROPERTIES LANGUAGE CXX)
@@ -251,7 +251,7 @@ set(CORE_FILES
     ${PROJECT_SOURCE_DIR}/src/core/time.c
     ${PROJECT_SOURCE_DIR}/src/core/zip.c
     ${PROJECT_SOURCE_DIR}/src/core/game_environment.c
-)
+    ${PROJECT_SOURCE_DIR}/src/core/game_images.cpp)
 
 set(BUILDING_FILES
     ${PROJECT_SOURCE_DIR}/src/building/animation.c

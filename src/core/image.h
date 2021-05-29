@@ -27,90 +27,82 @@ enum {
  */
 class image {
 private:
-    size_t width = 0;
-    size_t height = 0;
-    int num_animation_sprites = 0;
-    int sprite_offset_x = 0;
-    int sprite_offset_y = 0;
-    int animation_can_reverse = 0;
-    int animation_speed_id = 0;
-    int offset_mirror = 0;
-    int type = 0;
-    int fully_compressed = 0;
-    int external = 0;
-    int compressed_part = 0;
-    size_t bmp_index = 0;
-    int offset = 0;
-    size_t data_length = 0;
-    size_t uncompressed_length = 0;
-    size_t full_length = 0;
+    uint16_t width = 0;
+    uint16_t height = 0;
+    uint16_t num_animation_sprites = 0;
+    int16_t sprite_offset_x = 0;
+    int16_t sprite_offset_y = 0;
+    int8_t animation_can_reverse = 0;
+    uint8_t animation_speed_id = 0;
+    int32_t offset_mirror = 0;
+    uint8_t type = 0;
+    int8_t fully_compressed = 0;
+    int8_t external = 0;
+    int8_t compressed_part = 0;
+    uint8_t bmp_index = 0;
+    int32_t offset = 0;
+    int32_t data_length = 0;
+    int32_t uncompressed_length = 0;
+    int32_t full_length = 0;
     std::string bitmap_name;
     std::vector<color_t> data;
+
+    static color_t to_32_bit(uint16_t c);
 
 public:
     image() = default;
     ~image() = default;
 
+    static size_t convert_uncompressed(buffer *buf, size_t amount, color_t *dst);
+    static size_t convert_compressed(buffer *buf, size_t amount, color_t *dst);
+
+    // dummy image
+    static image& dummy() {
+        static image dummy = {};
+        return dummy;
+    }
+    bool is_dummy() const;
+
+    // getters & setters
     void set_data(color_t *image_data, size_t size);
     const color_t *get_data() const;
-
     const char *get_name() const;
     void set_name(const char *filename);
     void set_name(const char *filename, size_t size);
-
-    int get_width() const;
-    void set_width(int width);
-    int get_height() const;
-    void set_height(int height);
-    int get_type() const;
-    void set_type(int type);
-    int is_fully_compressed() const;
-    void set_fully_compressed(int new_is_fully_compressed);
-    int has_compressed_part() const;
-    void set_compressed_part(int new_has_compressed_part);
-    int get_offset() const;
-    void set_offset(int new_offset);
-    size_t get_data_length() const;
-    void set_data_length(int new_data_length);
-    size_t get_uncompressed_length() const;
+    uint16_t get_width() const;
+    void set_width(uint16_t width);
+    uint16_t get_height() const;
+    void set_height(uint16_t height);
+    uint8_t get_type() const;
+    void set_type(uint8_t uint8_t);
+    uint8_t is_fully_compressed() const;
+    void set_fully_compressed(uint8_t new_is_fully_compressed);
+    uint8_t has_compressed_part() const;
+    void set_compressed_part(uint8_t new_has_compressed_part);
+    int32_t get_offset() const;
+    void set_offset(int32_t new_offset);
+    int32_t get_data_length() const;
+    void set_data_length(int32_t new_data_length);
+    int32_t get_uncompressed_length() const;
     void set_uncompressed_length(int new_uncompressed_length);
-    size_t get_full_length() const;
-    void set_full_length(int new_full_length);
-    size_t get_bmp_index() const;
-    void set_bmp_index(int new_bmp_index);
+    int32_t get_full_length() const;
+    void set_full_length(int32_t new_full_length);
+    uint8_t get_bmp_index() const;
+    void set_bmp_index(uint8_t new_bmp_index);
     int is_external() const;
     void set_external(int new_external);
-    int get_num_animation_sprites() const;
-    void set_num_animation_sprites(int new_num_animation_sprites);
-    int get_sprite_offset_x() const;
-    void set_sprite_offset_x(int new_sprite_offset_x);
-    int get_sprite_offset_y() const;
-    void set_sprite_offset_y(int new_sprite_offset_y);
-    int get_animation_can_reverse() const;
-    void set_animation_can_reverse(int new_animation_can_reverse);
-    int get_animation_speed_id() const;
-    void set_animation_speed_id(int new_animation_speed_id);
+    uint16_t get_num_animation_sprites() const;
+    void set_num_animation_sprites(uint16_t new_num_animation_sprites);
+    int16_t get_sprite_offset_x() const;
+    void set_sprite_offset_x(int16_t new_sprite_offset_x);
+    int16_t get_sprite_offset_y() const;
+    void set_sprite_offset_y(int16_t new_sprite_offset_y);
+    int8_t get_animation_can_reverse() const;
+    void set_animation_can_reverse(int8_t new_animation_can_reverse);
+    uint8_t get_animation_speed_id() const;
+    void set_animation_speed_id(uint8_t new_animation_speed_id);
     int get_offset_mirror() const;
     void set_offset_mirror(int new_offset_mirror);
 };
-
-extern int terrain_ph_offset;
-
-int image_load_main(int climate_id, int is_editor, int force_reload);
-int image_load_fonts(encoding_type encoding);
-int image_load_enemy(int enemy_id);
-
-int image_id_from_group(int group);
-
-color_t to_32_bit(uint16_t c);
-int convert_uncompressed(buffer *buf, int amount, color_t *dst);
-int convert_compressed(buffer *buf, int amount, color_t *dst);
-
-const image *image_get(int id, int mode = 0);
-const image *image_letter(int letter_id);
-const image *image_get_enemy(int id);
-const color_t *image_data(int id);
-const color_t *image_data_letter(int letter_id);
-const color_t *image_data_enemy(int id);
 
 #endif // CORE_IMAGE_H
