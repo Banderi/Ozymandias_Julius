@@ -4,15 +4,11 @@ This is a fork of the **Julius/Augustus** project with the aim of making it work
 
 The work is unfinished, but it can more or less load original save games and play the first few missions in the campaign without major issues.
 
-If you're looking for the continued development of this project, check out [Banderi/Ozymandias](https://github.com/Banderi/Ozymandias) (migrated to Godot engine) or [Akhenaten](https://github.com/dalerank/Akhenaten) (fork of this repository).
+If you're looking for the continued development of this project, check out [Banderi/Ozymandias](https://github.com/Banderi/Ozymandias) (migrated to Godot engine) or [dalerank/Akhenaten](https://github.com/dalerank/Akhenaten) (fork of this repository).
 
-If you're looking for _Caesar 3_'s vanilla experience with modern machine compatibility, check out [Julius](https://github.com/bvschaik/julius).
+If you're looking for _Caesar 3_'s original open-source reimplementations, check out [bvschaik/Julius](https://github.com/bvschaik/julius) and [Keriew/Augustus](https://github.com/Keriew/augustus).
 
-If you want additional features and visual/UI improvements, and don't care about strict
-compatibility with the original save files, check out [Augustus](https://github.com/Keriew/augustus).
-
-For the original game, check out the page on [Steam](https://store.steampowered.com/app/564530/Pharaoh__Cleopatra/)
-or [GOG](https://www.gog.com/en/game/pharaoh_cleopatra).
+For the original game, check out the page on [Steam](https://store.steampowered.com/app/564530/Pharaoh__Cleopatra/) or [GOG](https://www.gog.com/en/game/pharaoh_cleopatra).
 For the official remaster called _A New Era_, check out the Steam page [here](https://store.steampowered.com/app/1351080/Pharaoh_A_New_Era/).
 
 ## Running the game
